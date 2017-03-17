@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <title>D3 Test</title>
+            <script type="text/javascript" src="/d3/d3.js"></script>
+            <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+            <link rel="stylesheet" href="/style/myStyle.css">
+        </head>
+        <body>
+            
+            <h1>Header summarizing visualization 1 </h1>
+            <p id="Visualization1_text">Text describing visualization 1</p>
+            <div id="area1"></div>
+
+            <!--
+            <div class="yeartoggler">
+              <p id="data2004">2004</p>
+              <p id="data2015">2015</p>
+            </div>
+            -->
+
+            <p id="data2003">Data from 2003</p>
+            <p id="data2015">Data from 2015</p>
+
+            <h1>Header summarizing visualization 2</h1>
+            <p id="Visualization2_text">Text describing visualization 2</p>
+            <div id="area2"></div>
+              
+          <script type="text/javascript">
+            
+            /*
+            class YearEnum  {
+              static year_2003 = 0;
+              static year_2015 = 1;
+            }
+            */
+
+            // Loading from csv file
+            var dataset;  
+            var dataset_2003;
+            var dataset_2015;
+            var data_displayed = 2013;
+
+            d3.json("data.json", function(error,json) {
+                if (error) {  //If error is not null, something went wrong.
+                  console.log(error);  //Log the error.
+                } 
+                else {      //If no error, the file loaded correctly. Yay!
+                  console.log(json);   //Log the data.
+
+                  //Include other code to execute after successful file load here
+                  dataset = json;
+                  dataset_2003 = json.Period2003;
+                  dataset_2015 = json.Period2015;
+                  console.log(dataset.Period2003);
+                  console.log(dataset.Period2015);
+
+                  //Width and height
+                  var w = 1000;
+                  var h = 600;
+                  var padding = 80;
+                  
+                  max_prostitution = d3.max([
+                      d3.max(dataset_2003, function(d) { console.log(d.prostitution); return parseInt(d.prostitution); }),
+                      d3.max(dataset_2015, function(d) { console.log(d.prostitution); return parseInt(d.prostitution); })
+                      ]);
+
+                  max_vehicle = d3.max([
+                      d3.max(dataset_2003, function(d) { console.log(d.vehicle); return parseInt(d.vehicle); }),
+                      d3.max(dataset_2015, function(d) { console.log(d.vehicle); return parseInt(d.vehicle); })
+                      ]);
+
+                  console.log("Max prostitution:" + max_prostitution);
+                  console.log("Max vehicle:" + max_vehicle);
+
+                  /* our dataset is on the format:
+                    name - District
+                    number of crimes - total
+                    nr of vehicle theft - y - vehicle 
+                    nr of prostitues - x - prostitution
+                  */
+
+                  max_radius = 10;
+
+                  //Create scale functions
+                  console.log("prostitution:")
+                  var xScale = d3.scale.linear()
+                             .domain([0, max_prostitution * 1.15])
+                             .range([padding, w - padding * 2]);
+
+                  console.log("vehicle:")
+                  var yScale = d3.scale.linear()
+                             .domain([0, max_vehicle * 1.1])
+                             .range([h - padding, padding]);
+                  console.log("total:")
+                  var rScale = d3.scale.linear()
+                              .domain([0, d3.max(dataset_2003, function(d) { console.log(d.total); return parseInt(d.total); })])
+                              .range([0,max_radius]);
+
+                  //Define X axis
+                  var xAxis = d3.svg.axis()
+                            .scale(xScale)
+                            .orient("bottom")
+                            .ticks(8);
+                  //Define Y axis
+                  var yAxis = d3.svg.axis()
+                            .scale(yScale)
+                            .orient("left")
+                            .ticks(8);
+
+                  //Create SVG element
+                  var svg1 = d3.select("#area1")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+                  //Define clipping path
+                  svg1.append("clipPath")
+                    .attr("id", "chart-area")
+                    .append("rect")
+                    .attr("x", padding)
+                    .attr("y", padding)
+                    .attr("width", w - padding * 3)
+                    .attr("height", h - padding * 2);
+
+                  //Create circles
+                  svg1.append("g")
+                     .attr("id", "circles")
+                     .attr("clip-path", "url(#chart-area)")
+                     .selectAll("circle")
+                     .data(dataset_2003)
+                     .enter()
+                     .append("circle")
+                     .attr("cx", function(d) {
+                        return xScale(d.prostitution);
+                     })
+                     .attr("cy", function(d) {
+                        return yScale(d.vehicle);
+                     })
+                     .attr("r", function(d) {
+                        return rScale(d.total);
+                     });
+                  
+                  //Create X axis
+                  svg1.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + (h - padding) + ")")
+                    .call(xAxis);
+                  
+                  //Create Y axis
+                  svg1.append("g")
+                    .attr("class", "y axis")
+                    .attr("transform", "translate(" + padding + ",0)")
+                    .call(yAxis);
+                  
+
+                  svg1.append("g")
+                     .attr("id", "texts")
+                     .attr("clip-path", "url(#chart-area)")
+                     .selectAll("text")
+                     .data(dataset_2003)
+                     .enter()
+                     .append("text")
+                     .attr("class", "labels")
+                     .text(function(d) {
+                        return d.District;
+                     })
+                     .attr("x", function(d) {
+                        return xScale(d.prostitution);
+                     })
+                     .attr("y", function(d) {
+                        return yScale(d.vehicle);
+                     })
+                     .attr("font-family", "sans-serif")
+                     .attr("font-size", "10px")
+                     .attr("fill", "red");
+                      //generateVis();
+                      //hideLoadingMsg();
+
+                  // now add titles to the axes
+                  svg1.append("text")
+                      .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                      .attr("transform", "translate("+ (padding/3) +","+(h/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+                      .text("Theft");
+
+                  svg1.append("text")
+                      .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                      .attr("transform", "translate("+ (w/2) +","+(h-(padding/3))+")")  // centre below axis
+                      .text("Prostitution");
+
+                  d3.selectAll("p").filter("#data2003").style("color","red");
+
+
+                  d3.selectAll("p")
+                    .on("click", function() {
+                      //button_clicked = d3.select(this);
+                      //button_clicked.style("color", "red")
+
+                      // Get button 2003 and 2015
+                      var p_2003 = d3.selectAll("p").filter("#data2003");
+                      var p_2015 = d3.selectAll("p").filter("#data2015"); 
+
+                      var paragraphID = d3.select(this).attr("id");
+                      var chosenDataset;
+
+                      if(paragraphID == "data2003"){
+                        chosenDataset = dataset_2003;
+                        p_2003.style("color", "red");
+                        p_2015.style("color", "black");
+                        console.log("2003 button pressed")
+
+                      }
+                      else {
+                        chosenDataset = dataset_2015;
+                        p_2003.style("color", "black");
+                        p_2015.style("color", "red");
+                        console.log("2015 button pressed")
+                      }
+                      
+                      var transition_duration = 1000;
+
+                      // Update radius scaling
+                      rScale.domain([0, d3.max(chosenDataset, function(d) { console.log(d.total); return parseInt(d.total); })]);
+
+                      //Update all circles
+                      svg1.selectAll("circle")
+                         .data(chosenDataset)
+                         .transition()
+                         .duration(transition_duration)
+                         .attr("cx", function(d) {
+                            return xScale(d.prostitution);
+                         })
+                         .attr("cy", function(d) {
+                            return yScale(d.vehicle);
+                         })
+                         .attr("r", function(d) {
+                            return rScale(d.total);
+                        });
+
+                      //Update all Text
+                      svg1.selectAll("text")
+                        .filter(".labels")
+                        .data(chosenDataset)
+                        .transition()
+                        .duration(transition_duration)
+                        .attr("x", function(d) {
+                          return xScale(d.prostitution);
+                        })
+                        .attr("y", function(d) {
+                          return yScale(d.vehicle);
+                        });
+
+                      //var bla = svg1.selectAll("text").filter(".labels");
+                      //console.log(bla);
+
+                    });
+                }
+            });
+   
+          // ---------------------------- Area 2 ----------------------------------
+          var categories;
+
+          d3.json("data2.json", function(error,json) {
+            if (error) {  //If error is not null, something went wrong.
+              console.log(error);  //Log the error.
+            } 
+            else {      //If no error, the file loaded correctly. Yay!
+              console.log(json);   //Log the data.
+              categories = json.data;
+              console.log(categories);
+
+              var data = [ 
+                    { letter: "A", value: 5 }, 
+                    { letter: "B", value: 10 }, 
+                    { letter: "C", value: 13 }, 
+                    { letter: "D", value: 19 }, 
+                    { letter: "E", value: 21 }, 
+                    { letter: "F", value: 25 }, 
+                    { letter: "G", value: 22 }, 
+                    { letter: "H", value: 18 }, 
+                    { letter: "I", value: 15 }, 
+                    { letter: "J", value: 13 },
+                    { letter: "K", value: 11 },
+                    { letter: "L", value: 12 },
+                    { letter: "M", value: 15 },
+                    { letter: "N", value: 20 },
+                    { letter: "P", value: 18 },
+                    { letter: "R", value: 17 },
+                    { letter: "S", value: 16 },
+                    { letter: "T", value: 18 },
+                    { letter: "U", value: 23 },
+                    { letter: "V", value: 25 } ];
+
+
+              var margin = {top: 40, right: 20, bottom: 30, left: 40},
+              width = 960 - margin.left - margin.right,
+              height = 500 - margin.top - margin.bottom;
+
+              var xScale = d3.scale.ordinal()
+                  .domain(data.map(function(d) { return d.letter; }))
+                  .rangeRoundBands([0, width], .1);
+
+              var yScale = d3.scale.linear()
+                  .domain([0, d3.max(data, function(d) { return d.value; })])
+                  .range([height, 0]);
+                
+                
+              var xAxis = d3.svg.axis()
+                  .scale(xScale)
+                  .orient("bottom");
+
+              var yAxis = d3.svg.axis()
+                  .scale(yScale)
+                  .orient("left")
+                  //.tickFormat(formatPercent);
+
+              var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                  return "<strong>Frequency:</strong> <span style='color:red'>" + d.value + "</span>";
+                })
+            
+
+              var svg2 = d3.select("#area2")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+              svg2.call(tip);
+
+              svg2.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis);
+
+              svg2.append("g")
+                  .attr("class", "y axis")
+                  .call(yAxis)
+                  .append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 6)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "end")
+                  .text("Frequency");
+
+              svg2.selectAll(".bar")
+                  .data(data)
+                  .enter().append("rect")
+                  .attr("class", "bar")
+                  .attr("x", function(d) { return xScale(d.letter); })
+                  .attr("width", xScale.rangeBand())
+                  .attr("y", function(d) { return yScale(d.value); })
+                  .attr("height", function(d) { return height - yScale(d.value); })
+                  .on('mouseover', tip.show)
+                  .on('mouseout', tip.hide);
+            }
+          });
+
+          </script>
+        </body>
+</html>

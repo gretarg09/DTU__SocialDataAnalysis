@@ -3,35 +3,68 @@
         <head>
             <meta charset="utf-8">
             <title>D3 Test</title>
-            <script type="text/javascript" src="d3/d3.js"></script>
+            <script type="text/javascript" src="/d3/d3.js"></script>
+            <link rel="stylesheet" href="/style/myStyle.css">
         </head>
         <body>
-            <script type="text/javascript">
+            <script type="text/javascript"> 
                 var dataset = [ 5, 10, 15, 20, 25 ];  //Declare global var
 
-                /*
-                d3.json("data.json", function(data) {
-                        dataset = data;  //Log output to consle
-                        console.log(data);
-                });
-                */
-        
-                console.log(dataset);
+                var dataset2 = [ 25, 7, 5, 26, 11, 8, 25, 14, 23, 19,
+                    14, 11, 22, 29, 11, 13, 12, 17, 18, 10,
+                    24, 18, 25, 9, 3 ];
+
+               // Random data
+                var dataset_random = [];
+                for (var i = 0; i < 25; i++) {
+                    var newNumber = Math.random() * 30;
+                    dataset_random.push(newNumber);
+                } 
+
+                var w = 500;
+                var h = 100;
                 
-                d3.select("body")
-                    .selectAll("p")
-                    .data(dataset)
+                var dataset3 = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+                                11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+                d3.select("body").selectAll("div")
+                    .data(dataset3)
                     .enter()
-                    .append("p")
-                    .text(function(d) { return "You can count up to: " + d; })
-                    .style("color",function(d){
-                        if (d > 15){
-                            return "red";
-                        }
-                        else {
-                            return "black";
-                        }
-                    });
+                    .append("div")
+                    .attr("class", "bar")
+                    .style("height", function(d) {
+                        var barHeight = d * 5;
+                        return barHeight + "px";
+                });
+                
+                // CIRCLES page 86 in the book
+                /*
+                // Drawing SVG 
+                var w = 500;
+                var h = 50;
+
+                var svg = d3.select("body")
+                    .append("png")
+                    .attr("width", w) 
+                    .attr("height", h);
+
+                var circles = svg.selectAll("circle")
+                     .data(dataset)
+                     .enter()
+                     .append("circle");
+
+                circles.attr("cx", function(d, i) {
+                        return (i * 50) + 25; // in SVG lingo, cx is the x position value of the center of the circle.
+                    })
+                    .attr("cy", h/2) // cy is the y position value of the center of each circle. 
+                    .attr("r", function(d) { 
+                        return d;  // the radius r of each circle is simply set to d
+                    })
+                    .attr("fill", "yellow")
+                    .attr("stroke", "orange")
+                    .attr("stroke-width", function(d) {
+                        return d/2;
+                    }); 
+                */
 
             </script>
         </body>
