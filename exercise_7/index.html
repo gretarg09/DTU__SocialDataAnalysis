@@ -13,13 +13,6 @@
             <p id="Visualization1_text">Text describing visualization 1</p>
             <div id="area1"></div>
 
-            <!--
-            <div class="yeartoggler">
-              <p id="data2004">2004</p>
-              <p id="data2015">2015</p>
-            </div>
-            -->
-
             <p id="data2003">Data from 2003</p>
             <p id="data2015">Data from 2015</p>
 
@@ -28,19 +21,13 @@
             <div id="area2"></div>
               
           <script type="text/javascript">
-            
-            /*
-            class YearEnum  {
-              static year_2003 = 0;
-              static year_2015 = 1;
-            }
-            */
 
             // Loading from csv file
             var dataset;  
             var dataset_2003;
             var dataset_2015;
             var data_displayed = 2013;
+            var primaryColor = "rgba(173,216,230,1)"
 
             d3.json("data.json", function(error,json) {
                 if (error) {  //If error is not null, something went wrong.
@@ -270,41 +257,17 @@
               categories = json.data;
               console.log(categories);
 
-              var data = [ 
-                    { letter: "A", value: 5 }, 
-                    { letter: "B", value: 10 }, 
-                    { letter: "C", value: 13 }, 
-                    { letter: "D", value: 19 }, 
-                    { letter: "E", value: 21 }, 
-                    { letter: "F", value: 25 }, 
-                    { letter: "G", value: 22 }, 
-                    { letter: "H", value: 18 }, 
-                    { letter: "I", value: 15 }, 
-                    { letter: "J", value: 13 },
-                    { letter: "K", value: 11 },
-                    { letter: "L", value: 12 },
-                    { letter: "M", value: 15 },
-                    { letter: "N", value: 20 },
-                    { letter: "P", value: 18 },
-                    { letter: "R", value: 17 },
-                    { letter: "S", value: 16 },
-                    { letter: "T", value: 18 },
-                    { letter: "U", value: 23 },
-                    { letter: "V", value: 25 } ];
-
-
-              var margin = {top: 40, right: 20, bottom: 30, left: 40},
+              var margin = {top: 40, right: 20, bottom: 200, left: 60},
               width = 960 - margin.left - margin.right,
-              height = 500 - margin.top - margin.bottom;
+              height = 600 - margin.top - margin.bottom;
 
               var xScale = d3.scale.ordinal()
-                  .domain(data.map(function(d) { return d.letter; }))
+                  .domain(categories.map(function(d) { return d.district; }))
                   .rangeRoundBands([0, width], .1);
 
               var yScale = d3.scale.linear()
-                  .domain([0, d3.max(data, function(d) { return d.value; })])
+                  .domain([0, d3.max(categories, function(d) { return d.value; })])
                   .range([height, 0]);
-                
                 
               var xAxis = d3.svg.axis()
                   .scale(xScale)
@@ -335,7 +298,12 @@
               svg2.append("g")
                   .attr("class", "x axis")
                   .attr("transform", "translate(0," + height + ")")
-                  .call(xAxis);
+                  .call(xAxis)
+                  .selectAll("text") 
+                  .style("text-anchor", "end")
+                  .attr("dx", "-.8em")
+                  .attr("dy", ".15em")
+                  .attr("transform", function(d) { return "rotate(-65)" });
 
               svg2.append("g")
                   .attr("class", "y axis")
@@ -348,10 +316,10 @@
                   .text("Frequency");
 
               svg2.selectAll(".bar")
-                  .data(data)
+                  .data(categories)
                   .enter().append("rect")
                   .attr("class", "bar")
-                  .attr("x", function(d) { return xScale(d.letter); })
+                  .attr("x", function(d) { return xScale(d.district); })
                   .attr("width", xScale.rangeBand())
                   .attr("y", function(d) { return yScale(d.value); })
                   .attr("height", function(d) { return height - yScale(d.value); })
