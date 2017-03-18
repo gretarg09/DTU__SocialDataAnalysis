@@ -27,7 +27,7 @@
             var dataset_2003;
             var dataset_2015;
             var data_displayed = 2013;
-            var primaryColor = "rgba(173,216,230,1)"
+            var primaryColor = "rgba(135,206,235,1)"
 
             d3.json("data.json", function(error,json) {
                 if (error) {  //If error is not null, something went wrong.
@@ -161,7 +161,7 @@
                      })
                      .attr("font-family", "sans-serif")
                      .attr("font-size", "10px")
-                     .attr("fill", "red");
+                     .attr("fill", primaryColor);
                       //generateVis();
                       //hideLoadingMsg();
 
@@ -176,7 +176,7 @@
                       .attr("transform", "translate("+ (w/2) +","+(h-(padding/3))+")")  // centre below axis
                       .text("Prostitution");
 
-                  d3.selectAll("p").filter("#data2003").style("color","red");
+                  d3.selectAll("p").filter("#data2003").style("color",primaryColor);
 
 
                   d3.selectAll("p")
@@ -193,7 +193,7 @@
 
                       if(paragraphID == "data2003"){
                         chosenDataset = dataset_2003;
-                        p_2003.style("color", "red");
+                        p_2003.style("color", primaryColor);
                         p_2015.style("color", "black");
                         console.log("2003 button pressed")
 
@@ -201,7 +201,7 @@
                       else {
                         chosenDataset = dataset_2015;
                         p_2003.style("color", "black");
-                        p_2015.style("color", "red");
+                        p_2015.style("color", primaryColor);
                         console.log("2015 button pressed")
                       }
                       
@@ -282,7 +282,7 @@
                 .attr('class', 'd3-tip')
                 .offset([-10, 0])
                 .html(function(d) {
-                  return "<strong>Frequency:</strong> <span style='color:red'>" + d.value + "</span>";
+                  return "<strong>Frequency:</strong> <span style='color:" + primaryColor + "'>" + d.value + "</span>";
                 })
             
 
