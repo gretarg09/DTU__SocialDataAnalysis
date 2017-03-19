@@ -11,13 +11,18 @@
             
             <h1>Header summarizing visualization 1 </h1>
             <p id="Visualization1_text">Text describing visualization 1</p>
-            <div id="area1"></div>
 
-            <p id="data2003">Data from 2003</p>
-            <p id="data2015">Data from 2015</p>
+            <p id="data2003" class="p_data_1">Data from 2003</p>
+            <p id="data2015" class="p_data_1">Data from 2015</p>
+
+            <div id="area1"></div>
 
             <h1>Header summarizing visualization 2</h1>
             <p id="Visualization2_text">Text describing visualization 2</p>
+
+            <p id="categories" class="p_data_2">Number of incidents per category</p>
+            <p id="perhour" class="p_data_2">Number of crimes per hour</p>
+
             <div id="area2"></div>
               
           <script type="text/javascript">
@@ -180,9 +185,8 @@
 
 
                   d3.selectAll("p")
+                    .filter(".p_data_1")
                     .on("click", function() {
-                      //button_clicked = d3.select(this);
-                      //button_clicked.style("color", "red")
 
                       // Get button 2003 and 2015
                       var p_2003 = d3.selectAll("p").filter("#data2003");
@@ -246,27 +250,27 @@
             });
    
           // ---------------------------- Area 2 ----------------------------------
-          var categories;
+          var data_2;
 
           d3.json("data2.json", function(error,json) {
             if (error) {  //If error is not null, something went wrong.
               console.log(error);  //Log the error.
             } 
             else {      //If no error, the file loaded correctly. Yay!
-              console.log(json);   //Log the data.
-              categories = json.data;
-              console.log(categories);
+              console.log(json);  //Log the data.
+              data_2 = json;
+              console.log(data_2.categories);
 
               var margin = {top: 40, right: 20, bottom: 200, left: 60},
               width = 960 - margin.left - margin.right,
               height = 600 - margin.top - margin.bottom;
 
               var xScale = d3.scale.ordinal()
-                  .domain(categories.map(function(d) { return d.district; }))
+                  .domain(data_2.categories.map(function(d) { return d.key; }))
                   .rangeRoundBands([0, width], .1);
 
               var yScale = d3.scale.linear()
-                  .domain([0, d3.max(categories, function(d) { return d.value; })])
+                  .domain([0, d3.max(data_2.categories, function(d) { return d.value; })])
                   .range([height, 0]);
                 
               var xAxis = d3.svg.axis()
@@ -303,7 +307,7 @@
                   .style("text-anchor", "end")
                   .attr("dx", "-.8em")
                   .attr("dy", ".15em")
-                  .attr("transform", function(d) { return "rotate(-65)" });
+                  .attr("transform", function(d) { return "rotate(-65)" })
 
               svg2.append("g")
                   .attr("class", "y axis")
@@ -316,15 +320,94 @@
                   .text("Frequency");
 
               svg2.selectAll(".bar")
-                  .data(categories)
-                  .enter().append("rect")
+                  .data(data_2.categories)
+                  .enter()
+                  .append("rect")
                   .attr("class", "bar")
-                  .attr("x", function(d) { return xScale(d.district); })
+                  .attr("x", function(d) { return xScale(d.key); })
                   .attr("width", xScale.rangeBand())
                   .attr("y", function(d) { return yScale(d.value); })
                   .attr("height", function(d) { return height - yScale(d.value); })
                   .on('mouseover', tip.show)
                   .on('mouseout', tip.hide);
+
+              d3.selectAll("p")
+                  .filter("#categories")
+                  .style("color", primaryColor);
+
+              //On click, update with new data      
+              d3.selectAll("p")
+                .filter(".p_data_2")
+                .on("click", function() {
+
+                //Get button categories and 2015
+                var p_categories = d3.selectAll("p").filter("#categories");
+                var p_perhour = d3.selectAll("p").filter("#perhour"); 
+
+                var paragraphID = d3.select(this).attr("id");
+                var chosenDataset;
+
+                if(paragraphID == "categories"){
+                  chosenDataset = data_2.categories;
+                  p_categories.style("color", primaryColor);
+                  p_perhour.style("color", "black");
+                  console.log("categories button pressed")
+                }
+                else {
+                  chosenDataset = data_2.perhour;
+                  p_categories.style("color", "black");
+                  p_perhour.style("color", primaryColor);
+                  console.log("perhour button pressed")
+                }
+
+                // Update xScale and yScale
+                xScale.domain(chosenDataset.map(function(d) { return d.key; }));
+                yScale.domain([0, d3.max(chosenDataset, function(d) { return d.value; })]);
+
+                //Update all rects
+                var bar = svg2.selectAll("rect")
+                   .data(chosenDataset);
+
+
+                bar.enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .on('mouseover', tip.show)
+                    .on('mouseout', tip.hide);
+
+                //Remove exiting attributes
+                bar.exit()
+                   .transition()
+                   .duration(500)
+                   .attr("height", 0)
+                   .remove();
+
+                bar.transition()
+                   .delay(function(d, i) {return i / chosenDataset.length * 1000;})
+                   .duration(500)
+                   .attr("x", function(d) { return xScale(d.key); })
+                   .attr("y", function(d) { return yScale(d.value); })
+                   .attr("width", xScale.rangeBand())
+                   .attr("height", function(d) { return height - yScale(d.value); });
+        
+                //Update x-axis
+                svg2.select(".x.axis")
+                    .transition()
+                    .duration(1000)
+                    .call(xAxis)
+                    .selectAll("text") 
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.8em")
+                    .attr("dy", ".15em")
+                    .attr("transform", function(d) { return "rotate(-65)" });
+
+                //Update y-axis
+                svg2.select(".y.axis")
+                    .transition()
+                    .duration(1000)
+                    .call(yAxis);
+
+              });
             }
           });
 

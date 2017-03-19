@@ -10,7 +10,7 @@ p {
 }
 
 p:active {
-    color: red; 
+    color: rgba(135,206,235,1);
 }
 
 div.bar {
