@@ -22,3 +22,8 @@ p:active {
     font-family: sans-serif;
     font-size: 11px;
 }
+
+.mean_circles {
+    stroke:#000000;
+    stroke-width: 2;
+}
