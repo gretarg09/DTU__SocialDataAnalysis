@@ -40,7 +40,7 @@
                 var primaryColor = "rgba(135,206,235,1)"
 
                 // Load file from json 
-                d3.json("data1.json", function(error,json) {
+                d3.json("data/data1.json", function(error,json) {
                     if (error) {  //If error is not null, something went wrong.
 
                         console.log(error);  //Log the error.
@@ -292,7 +292,7 @@
                        .attr("d", path)
                        .style("fill", "steelblue");
 
-                    d3.json("data2.json", function(error,json) {
+                    d3.json("data/data2.json", function(error,json) {
                         if (error) {  //If error is not null, something went wrong.
                             console.log(error);  //Log the error.
                         } 
