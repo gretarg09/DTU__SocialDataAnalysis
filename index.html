@@ -277,6 +277,7 @@
                     // dark green, burgendy, dark blue, mustart yellow, dark grey, sky blue
                     .range(["#003C00","#800020","#210860","#999900","#666666","#87ceeb"]);
 
+                //Define quantize scale to sort data values into buckets of color for mean value data points
                 var mean_color = d3.scale.quantize()
                     .domain(d3.range(6))
                     // dark green, burgendy, dark blue, mustart yellow, dark grey, sky blue
