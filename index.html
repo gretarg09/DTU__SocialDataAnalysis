@@ -56,7 +56,7 @@
                         console.log(dataset.Period2003);
                         console.log(dataset.Period2015);
 
-                        //Width and height
+                        //Width,height and padding
                         var w = 1000;
                         var h = 600;
                         var padding = 80;
@@ -75,21 +75,20 @@
                         console.log("Max prostitution:" + max_prostitution);
                         console.log("Max vehicle:" + max_vehicle);
 
+                        // Setting the maximum circle radius. This will be used in the radius scaling
+                        max_radius = 15;
 
-                        max_radius = 10;
-
-                        //Create scale functions
-                        console.log("prostitution:")
+                        //Create xScale function
                         var xScale = d3.scale.linear()
                             .domain([0, max_prostitution * 1.15])
                             .range([padding, w - padding * 2]);
 
-                        console.log("vehicle:")
+                        //Create yScale function
                         var yScale = d3.scale.linear()
                             .domain([0, max_vehicle * 1.1])
                             .range([h - padding, padding]);
 
-                        console.log("total:")
+                        // Create radius scale function
                         var rScale = d3.scale.linear()
                             .domain([0, d3.max(dataset_2003, function(d) { console.log(d.total); return parseInt(d.total); })])
                             .range([0,max_radius]);
@@ -151,7 +150,7 @@
                             .attr("transform", "translate(" + padding + ",0)")
                             .call(yAxis);
                       
-
+                        // Adding text values above each circle
                         svg1.append("g")
                             .attr("id", "texts")
                             .attr("clip-path", "url(#chart-area)")
@@ -178,16 +177,17 @@
                         svg1.append("text")
                             .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
                             .attr("transform", "translate("+ (padding/3) +","+(h/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
-                            .text("Theft");
+                            .text("Vehicle theft");
 
                         svg1.append("text")
                             .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
                             .attr("transform", "translate("+ (w/2) +","+(h-(padding/3))+")")  // centre below axis
                             .text("Prostitution");
 
+                        // Set corresponding color on p
                         d3.selectAll("p").filter("#data2003").style("color",primaryColor);
 
-
+                        // Create the toggle functionality. When p is pressed we update the dataset and start a transition from one dataset to the other
                         d3.selectAll("p")
                             .filter(".p_data_1")
                             .on("click", function() {
@@ -211,7 +211,8 @@
                                 p_2015.style("color", primaryColor);
                                 console.log("2015 button pressed")
                             }
-                          
+                            
+                            // Set transition duration
                             var transition_duration = 1000;
 
                             // Update radius scaling
@@ -302,12 +303,14 @@
                         .attr('stroke-width',0.5)
                         .attr('stroke',"#626262");
 
+                    // Read in the dataset for visualization 2
                     d3.json("data/data2.json", function(error,json) {
                         if (error) {  //If error is not null, something went wrong.
                             console.log(error);  //Log the error.
                         } 
                         else {  
                             //If no error, the file loaded correctly. Yay!
+
                             /*
                              Note that we check the type of d in each function(d).
                              The reason being that we append the mean lat and lon values for each class in the end of data_2.knn#.data
@@ -325,10 +328,12 @@
                                 ]
                              */
 
+                            // Saving the data in the data_2 variable
                             data_2 = json;
                             console.log(data_2);
                             locations = data_2.locations;
                             
+                            //Create circles for each observation
                             svg.selectAll("circle")
                                 .data(data_2.knn2.data)
                                 .enter()
@@ -374,8 +379,8 @@
                                         .attr("cy", function(d,i) { return projection(get_lonlat_pair(d,i,locations))[1]; })
                                         .attr("r",function(d){ return get_radius(d); })
                                         .attr("class",function(d){ return get_class(d); })
-                                        .transition()
-                                        .duration(300)
+                                        //.transition()
+                                        //.duration(300)
                                         .style("fill", function(d) { return get_color(d);})
                                         .style("opacity", 0.75);
 
@@ -387,6 +392,7 @@
                     });
                 });
                 
+                // The function returns longitute latitute value pairs
                 function get_lonlat_pair(d,i,locations){
                     var lat;
                     var lon;
@@ -400,8 +406,10 @@
                         lon = d[2];
                     }
                     return [lon,lat];
-                }
+                }dat
 
+                // The function returns the circle radius for each observation. If the observation is a mean datapoint (observation) then 
+                // it should receive 4 times the normal radius. We want the mean data point's circles to be bigger.
                 function get_radius(d){
                     if(typeof(d) == "number" ){
                         return 3;
@@ -411,6 +419,7 @@
                     }
                 }
 
+                // This function divides the circles into two classes. Either a normal knn_class observation or a mean_circle observation
                 function get_class(d){
                     if(typeof(d) == "number" ){
                         return "knn_class" + d.toString();
@@ -420,22 +429,24 @@
                     }
                 }
 
+                // Return appropriate color for each data point
                 function get_color (d){
                     if(typeof(d) == "number" ){
                         return color(d);
                     }
                     else{
-                        console.log("getting mean color for: " + d[0] + " which is " + mean_color(d));
                         return mean_color(d[0]);
                     }
                 }
 
+                // Sets the text color of each p as black. 
                 function setcolor_knn_p() {
                     d3.selectAll("p")
                         .filter(".p_knn")
                         .style("color", "black");
                 }
 
+                // Returns the datasets class
                 function getdata_by_class_knn(data,knn_class){
                     if(knn_class == "knn2"){
                         return data.knn2;
