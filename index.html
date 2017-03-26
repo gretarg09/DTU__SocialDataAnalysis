@@ -343,7 +343,7 @@
                                 .attr("r",function(d){ return get_radius(d); })
                                 .style("fill", function(d) {return get_color(d);})
                                 .attr("class",function(d){ return get_class(d); })
-                                .style("opacity", 0.75);
+                                .style("opacity", function(d) { return get_opacity(d);});
 
                             // Create the toggle function
                             d3.selectAll("p").filter("#knn2").style("color",primaryColor);
@@ -372,7 +372,6 @@
                                     // This will only be class mean data points
                                     circles.enter()
                                         .append("circle")
-                                        .style("opacity", 0.75);
 
                                     //Update all circles
                                     circles.attr("cx", function(d,i) { return projection(get_lonlat_pair(d,i,locations))[0];})
@@ -382,7 +381,7 @@
                                         //.transition()
                                         //.duration(300)
                                         .style("fill", function(d) { return get_color(d);})
-                                        .style("opacity", 0.75);
+                                        .style("opacity", function(d) { return get_opacity(d);});
 
                                     // Remove class mean data points
                                     circles.exit()
@@ -416,6 +415,15 @@
                     }
                     else{
                         return 4*4;
+                    }
+                }
+
+                function get_opacity(d){
+                    if(typeof(d) == "number" ){
+                        return 0.75;
+                    }
+                    else{
+                        return 1;
                     }
                 }
 
