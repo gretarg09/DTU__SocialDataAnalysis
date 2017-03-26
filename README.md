@@ -1,2 +1,4 @@
 # Dtu-SocialDataAnalysis
-Social data Analysis and visualization course at 
+
+Project link:
+https://gretarg09.github.io/Dtu-SocialDataAnalysis/
