@@ -188,6 +188,7 @@
                         .attr("r", function(d) {
                              return rScale(d.total);
                         })
+                        .style("opacity", 0.75)
                         .on('mouseover', tip.show)
                         .on('mouseout', tip.hide);
                   
@@ -286,8 +287,7 @@
                             })
                             .attr("r", function(d) {
                                 return rScale(d.total);
-                            })
-                            .style("opacity", 0.75);
+                            });
 
                         //Update all Text
                         svg1.selectAll("text")
