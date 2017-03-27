@@ -1,11 +1,9 @@
 body {
 	background-color: white;
 	font-family: "sans serif";
-	font-size: 18px;
-	font-weight: bold
-}
-p {
-	text-align: center;
+	font-size: 1em;
+    padding-top:4em;
+	/*font-weight: bold*/
 }
 
 p:active {
@@ -27,3 +25,12 @@ p:active {
     stroke:#000000;
     stroke-width: 2;
 }
+
+.visual-button {
+    /*font-family: inherit;*/
+    font-size: 1em;
+    /*font-weight: bold;*/
+    /*padding-right: 1em;*/
+    /*border: none;*/
+    /*background: none;*/
+ }
