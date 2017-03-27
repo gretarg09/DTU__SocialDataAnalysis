@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <title>Project 2</title>
         <script type="text/javascript" src="d3/d3.js"></script>
+        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <link rel="stylesheet" href="style/myStyle.css">
         <link rel="stylesheet" href="style/normalize.css">
     <link rel="stylesheet" href="style/skeleton.css">
@@ -142,11 +143,23 @@
                                 .orient("left")
                                 .ticks(8);
 
+                    // Create d3 -tip
+                    var tip = d3.tip()
+                        .attr('class', 'd3-tip')
+                        .offset([-10, 0])
+                        .html(function(d) {
+                            return "<div style='margin-bottom: 6px'><strong style='margin-right: 6px'>Total crimes:</strong> <span style='color:rgba(135,206,235,1)'>" + d.total + "</span></div>"
+                                + "<div style='margin-bottom: 6px'><strong style='margin-right: 6px'>Vehicle theft:</strong> <span style='color:rgba(135,206,235,1)'>" + d.vehicle + "</span></div>"
+                                + "<div><strong style='margin-right: 6px'>Prostitution:</strong> <span style='color:rgba(135,206,235,1)'>" + d.prostitution + "</span></div>";
+                        });
+
                     //Create SVG element
                     var svg1 = d3.select("#area1")
                         .append("svg")
                         .attr("width", w)
                         .attr("height", h);
+
+                    svg1.call(tip);
 
                     //Define clipping path
                     svg1.append("clipPath")
@@ -173,7 +186,9 @@
                         })
                         .attr("r", function(d) {
                              return rScale(d.total);
-                        });
+                        })
+                        .on('mouseover', tip.show)
+                        .on('mouseout', tip.hide);
                   
                     //Create X axis
                     svg1.append("g")
