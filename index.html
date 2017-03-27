@@ -17,10 +17,10 @@
     			<div class='twelve columns exercise-view'>
     				<!-- EXERCISE 1 -->
             <h2>Assignment 2A: One scatter plot and two datasets</h2>
+            <div id="Visualization1_text">
+          		<p>In the following chart we compare the total number of crimes in each district of the City of San Fransisco, to the number of prostitution and vehicle theft incidences. This is based on <a href="https://data.sfgov.org/Public-Safety/SFPD-Incidents-from-1-January-2003/tmnf-yvry/data">incident report data</a>, provided by the SFPD. Click on the buttons above the chart to switch between the years 2003 and 2015. On the y axis we have the number of vehicle thefts, on the x axis the number of prostitution incidents and the radius of each district indicates the total number of crimes in a district relative to the other.</p>
+            </div>
             <div class="visual-container">
-            	<div id="Visualization1_text">
-            		<p>In the following chart we compare the total number of crimes in each district of the City of San Fransisco, to the number of prostitution and vehicle theft incidences. This is based on <a href="https://data.sfgov.org/Public-Safety/SFPD-Incidents-from-1-January-2003/tmnf-yvry/data">incident report data</a>, provided by the SFPD. Click on the buttons above the chart to switch between the years 2003 and 2015. On the y axis we have the number of vehicle thefts, on the x axis the number of prostitution incidents and the radius of each district indicates the total number of crimes in a district relative to the other.</p>
-            		</div>
             	<div class='visual-buttons'>
                 	<button id="data2003" class="p_data_1 visual-button">Data from 2003</button>
                 	<button id="data2015" class="p_data_1 visual-button">Data from 2015</button>
@@ -39,17 +39,18 @@
             <h2>Assignment 2B: Visualizing geodata</h2>
             <p id="Visualization2_text">Below we visualize different k clusterings of prostitution incidents in San Fransisco, where 2<=k<=6. K-means clustering clusters in this instance latitude and longitude coordinates of the incidents. The clustering method finds k means or centroids in the dataset and partitions it into k sets with the goal of minimizing within-cluster sum of squares.
             The centroid of each cluster is visualized as a large circle while the incidents are small circles. Each centroid and corresponding set of incidents is colored the same. Use the buttons above the visualization to change the number of clusters. You can also hover above one with another selected to temporarily switch between them.
-
-			</p>
-			<p><a href="https://en.wikipedia.org/wiki/K-means_clustering">Here</a> you can read more on k-means clustering.</p>
-            <div> 
+						</p>
+						<p><a href="https://en.wikipedia.org/wiki/K-means_clustering">Here</a> you can read more on k-means clustering.</p>
+						<div class='visual-container'>
+							<div class='visual-buttons'> 
                 <button id="kmeans2" class="p_kmeans visual-button">k = 2</button>
                 <button id="kmeans3" class="p_kmeans visual-button">k = 3</button>
                 <button id="kmeans4" class="p_kmeans visual-button">k = 4</button>
                 <button id="kmeans5" class="p_kmeans visual-button">k = 5</button>
                 <button id="kmeans6" class="p_kmeans visual-button">k = 6</button>
-            </div>
-            <div id="area3"></div>
+		          </div>
+		          <div id="area3"></div>
+						</div>
     			</div>
     		</div>
     		<div class='row'>
