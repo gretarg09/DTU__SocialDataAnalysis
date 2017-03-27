@@ -55,7 +55,7 @@
     			<div class='twelve columns'>
     				<em><h6 class=''>Think carefully about how you can minimize the size of the file containing the data. My file is around 700KB. Why is the size of the file important?</h6></em>
     				<p class='last-text'>
-    						The file is loaded asyncronously by the javascript code in this page and the visualizations are updated when the data has been read. The size of the datafile directly influences the time that passes by from the moment the javascript is loaded until the data is represented visually. This delay is then compounded by the network connectivity and hardware of a users device. Our datafiles minimized sum up to 871 KB.
+    						The file is loaded asyncronously by the javascript code in this page and the visualizations are updated when the data has been read. The size of the datafile directly influences the time that passes by from the moment the javascript is loaded until the data is represented visually. This delay is then compounded by the network connectivity and hardware of a users device. Large files will take longer time to load which results in a laggy and slow webpage. Our datafiles minimized sum up to 871 KB.
     				</p>
     				<p>
     				 Companion notebook for this page can be found <a href="https://github.com/gretarg09/Dtu-SocialDataAnalysis/blob/master/notebook/Project_2.ipynb">here</a>. And the computed data can be found <a href="https://github.com/gretarg09/Dtu-SocialDataAnalysis/tree/master/data">here</a>.
@@ -113,7 +113,7 @@
                     console.log("Max vehicle:" + max_vehicle);
 
                     // Setting the maximum circle radius. This will be used in the radius scaling
-                    max_radius = 15;
+                    max_radius = 20;
 
                     //Create xScale function
                     var xScale = d3.scale.linear()
@@ -203,7 +203,9 @@
                             return xScale(d.prostitution);
                         })
                         .attr("y", function(d) {
-                             return yScale(d.vehicle);
+                            //Push the y label a bit higher than the circle
+                            amount_to_elevate = rScale(d.total) + 2;
+                            return yScale(d.vehicle) - amount_to_elevate;
                         })
                         .attr("font-family", "sans-serif")
                         .attr("font-size", "10px")
@@ -268,7 +270,8 @@
                             })
                             .attr("r", function(d) {
                                 return rScale(d.total);
-                            });
+                            })
+                            .style("opacity", 0.75);
 
                         //Update all Text
                         svg1.selectAll("text")
@@ -280,14 +283,16 @@
                                 return xScale(d.prostitution);
                             })
                             .attr("y", function(d) {
-                                return yScale(d.vehicle);
+                                //Push the y label a bit higher than the circle
+                                amount_to_elevate = rScale(d.total) + 2;
+                                return yScale(d.vehicle) - amount_to_elevate;
                             });
                     });
                 }
             });
         </script>
 
- <!-- EXERCISE 2 SCRIPT -->
+        <!-- EXERCISE 2 SCRIPT -->
         <script type="text/javascript"> 
             //Width and height
             var w = 800;
