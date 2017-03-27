@@ -5,6 +5,9 @@ body {
 }
 p {
 	text-align: center;
+	font-size: 1em;
+    padding-top:4em;
+	/*font-weight: bold*/
 }
 
 p:active {
@@ -27,24 +30,10 @@ p:active {
     stroke-width: 2;
 }
 
-
 .container {
     width: 855px;
     margin: 0 auto;
     text-align: center;
-}
-
-.p_knn_container p {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 1cm;
-    font-weight: bold
-}
-.p_year_container p{
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 1cm;
-    font-weight: bold
 }
 
 .p_data_1{
@@ -57,4 +46,13 @@ p:active {
 
 #area3 {
     text-align:center;
+}
+
+.visual-button {
+    /*font-family: inherit;*/
+    font-size: 1em;
+    /*font-weight: bold;*/
+    /*padding-right: 1em;*/
+    /*border: none;*/
+    /*background: none;*/
 }
